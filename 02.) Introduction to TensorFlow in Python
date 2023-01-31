@@ -1,0 +1,735 @@
+
+Defining data as constants
+Throughout this course, we will use tensorflow version 2.6.0 and will exclusively import the submodules needed to complete each exercise. This will usually be done for you, but you will do it in this exercise by importing constant from tensorflow.
+
+After you have imported constant, you will use it to transform a numpy array, credit_numpy, into a tensorflow constant, credit_constant. This array contains feature columns from a dataset on credit card holders and is previewed in the image below. We will return to this dataset in later chapters.
+
+Note that tensorflow 2 allows you to use data as either a numpy array or a tensorflow constant object. Using a constant will ensure that any operations performed with that object are done in tensorflow.
+
+This image shows four feature columns from a dataset on credit card default: education, marriage, age, and bill amount.
+
+Instructions
+100 XP
+Import the constant submodule from the tensorflow module.
+Convert the credit_numpy array into a constant object in tensorflow. Do not set the data type.
+
+
+# Import constant from TensorFlow
+from tensorflow import constant
+
+# Convert the credit_numpy array into a tensorflow constant
+credit_constant = constant(credit_numpy)
+
+# Print constant datatype
+print('\n The datatype is:', credit_constant.dtype)
+
+# Print constant shape
+print('\n The shape is:', credit_constant.shape)
+
+
+Defining variables
+Unlike a constant, a variable's value can be modified. This will be useful when we want to train a model by updating its parameters.
+
+Let's try defining and printing a variable. We'll then convert the variable to a numpy array, print again, and check for differences. Note that Variable(), which is used to create a variable tensor, has been imported from tensorflow and is available to use in the exercise.
+
+Instructions
+100 XP
+Define a variable, A1, as the 1-dimensional tensor: [1, 2, 3, 4].
+Apply .numpy() to A1 and assign it to B1.
+
+
+# Define the 1-dimensional variable A1
+A1 = Variable([1, 2, 3, 4])
+
+# Print the variable A1
+print('\n A1: ', A1)
+
+# Convert A1 to a numpy array and assign it to B1
+B1 = A1.numpy()
+
+# Print B1
+print('\n B1: ', B1)
+
+
+Performing element-wise multiplication
+Element-wise multiplication in TensorFlow is performed using two tensors with identical shapes. This is because the operation multiplies elements in corresponding positions in the two tensors. An example of an element-wise multiplication, denoted by the 
+ symbol, is shown below:
+
+  
+  
+ 
+
+In this exercise, you will perform element-wise multiplication, paying careful attention to the shape of the tensors you multiply. Note that multiply(), constant(), and ones_like() have been imported for you.
+
+Instructions
+100 XP
+Define the tensors A1 and A23 as constants.
+Set B1 to be a tensor of ones with the same shape as A1.
+Set B23 to be a tensor of ones with the same shape as A23.
+Set C1 and C23 equal to the element-wise products of A1 and B1, and A23 and B23, respectively.
+
+
+# Define tensors A1 and A23 as constants
+A1 = constant([1, 2, 3, 4])
+A23 = constant([[1, 2, 3], [1, 6, 4]])
+
+# Define B1 and B23 to have the correct shape
+B1 = ones_like(A1)
+B23 = ones_like(A23)
+
+# Perform element-wise multiplication
+C1 = multiply(A1,B1)
+C23 = multiply(A23,B23)
+
+# Print the tensors C1 and C23
+print('\n C1: {}'.format(C1.numpy()))
+print('\n C23: {}'.format(C23.numpy()))
+
+
+Making predictions with matrix multiplication
+In later chapters, you will learn to train linear regression models. This process will yield a vector of parameters that can be multiplied by the input data to generate predictions. In this exercise, you will use input data, features, and a target vector, bill, which are taken from a credit card dataset we will use later in the course.
+
+ 
+, 
+ 
+,  
+ 
+
+The matrix of input data, features, contains two columns: education level and age. The target vector, bill, is the size of the credit card borrower's bill.
+
+Since we have not trained the model, you will enter a guess for the values of the parameter vector, params. You will then use matmul() to perform matrix multiplication of features by params to generate predictions, billpred, which you will compare with bill. Note that we have imported matmul() and constant().
+
+Instructions
+100 XP
+Define features, params, and bill as constants.
+Compute the predicted value vector, billpred, by multiplying the input data, features, by the parameters, params. Use matrix multiplication, rather than the element-wise product.
+Define error as the targets, bill, minus the predicted values, billpred.
+
+# Define features, params, and bill as constants
+features = constant([[2, 24], [2, 26], [2, 57], [1, 37]])
+params = constant([[1000], [150]])
+bill = constant([[3913], [2682], [8617], [64400]])
+
+# Compute billpred using features and params
+billpred = matmul(features,params)
+
+# Compute and print the error
+error = bill - billpred
+print(error.numpy())
+
+
+Summing over tensor dimensions
+You've been given a matrix, wealth. This contains the value of bond and stock wealth for five individuals in thousands of dollars.
+
+
+
+Combined, the 5 individuals hold $50,000 in bonds.
+
+
+Reshaping tensors
+Later in the course, you will classify images of sign language letters using a neural network. In some cases, the network will take 1-dimensional tensors as inputs, but your data will come in the form of images, which will either be either 2- or 3-dimensional tensors, depending on whether they are grayscale or color images.
+
+The figure below shows grayscale and color images of the sign language letter A. The two images have been imported for you and converted to the numpy arrays gray_tensor and color_tensor. Reshape these arrays into 1-dimensional vectors using the reshape operation, which has been imported for you from tensorflow. Note that the shape of gray_tensor is 28x28 and the shape of color_tensor is 28x28x3.
+
+This figure shows grayscale and color images of the sign language letter "A".
+
+Instructions
+100 XP
+Reshape gray_tensor from a 28x28 matrix into a 784x1 vector named gray_vector.
+Reshape color_tensor from a 28x28x3 tensor into a 2352x1 vector named color_vector.
+The first column corresponds to bonds and the second corresponds to stocks. Each row gives the bond and stock wealth for a single individual. Use wealth, reduce_sum(), and .numpy() to determine which statements are correct about wealth.
+
+# Reshape the grayscale image tensor into a vector
+gray_vector = reshape(gray_tensor, (784, 1))
+
+# Reshape the color image tensor into a vector
+color_vector = reshape(color_tensor, (2352, 1))
+
+
+Optimizing with gradients
+You are given a loss function, 
+, which you want to minimize. You can do this by computing the slope using the GradientTape() operation at different values of x. If the slope is positive, you can decrease the loss by lowering x. If it is negative, you can decrease it by increasing x. This is how gradient descent works.
+
+The image shows a plot of y equals x squared. It also shows the gradient at x equals -1, x equals 0, and x equals 1.
+
+In practice, you will use a high level tensorflow operation to perform gradient descent automatically. In this exercise, however, you will compute the slope at x values of -1, 1, and 0. The following operations are available: GradientTape(), multiply(), and Variable().
+
+Instructions
+100 XP
+Define x as a variable with the initial value x0.
+Set the loss function, y, equal to x multiplied by x. Do not make use of operator overloading.
+Set the function to return the gradient of y with respect to x.
+
+
+def compute_gradient(x0):
+  	# Define x as a variable with an initial value of x0
+	x = Variable(x0)
+	with GradientTape() as tape:
+		tape.watch(x)
+        # Define y using the multiply operation
+		y = multiply(x,x)
+    # Return the gradient of y with respect to x
+	return tape.gradient(y, x).numpy()
+
+# Compute and print gradients at x = -1, 1, and 0
+print(compute_gradient(-1.0))
+print(compute_gradient(1.0))
+print(compute_gradient(0.0))
+
+
+Working with image data
+You are given a black-and-white image of a letter, which has been encoded as a tensor, letter. You want to determine whether the letter is an X or a K. You don't have a trained neural network, but you do have a simple model, model, which can be used to classify letter.
+
+The 3x3 tensor, letter, and the 1x3 tensor, model, are available in the Python shell. You can determine whether letter is a K by multiplying letter by model, summing over the result, and then checking if it is equal to 1. As with more complicated models, such as neural networks, model is a collection of weights, arranged in a tensor.
+
+Note that the functions reshape(), matmul(), and reduce_sum() have been imported from tensorflow and are available for use.
+
+Instructions
+100 XP
+The model, model, is 1x3 tensor, but should be a 3x1. Reshape model.
+Perform a matrix multiplication of the 3x3 tensor, letter, by the 3x1 tensor, model.
+Sum over the resulting tensor, output, and assign this value to prediction.
+Print prediction using the .numpy() method to determine whether letter is K.
+
+# Reshape model from a 1x3 to a 3x1 tensor
+model = reshape(model, (3, 1))
+
+# Multiply letter by model
+output = matmul(letter, model)
+
+# Sum over output and print prediction using the numpy method
+prediction = sum(output)
+print(prediction.numpy())
+
+
+Load data using pandas
+Before you can train a machine learning model, you must first import data. There are several valid ways to do this, but for now, we will use a simple one-liner from pandas: pd.read_csv(). Recall from the video that the first argument specifies the path or URL. All other arguments are optional.
+
+In this exercise, you will import the King County housing dataset, which we will use to train a linear model later in the chapter.
+
+Instructions
+100 XP
+Import pandas under the alias pd.
+Assign the path to a string variable with the name data_path.
+Load the dataset as a pandas dataframe named housing.
+Print the price column of housing.
+
+# Import pandas under the alias pd
+import pandas as pd
+
+# Assign the path to a string variable named data_path
+data_path = 'kc_house_data.csv'
+
+# Load the dataset as a dataframe named housing
+housing = pd.read_csv(data_path)
+
+# Print the price column of housing
+print(housing['price'])
+
+# Import numpy and tensorflow with their standard aliases
+import numpy as np
+import tensorflow as tf
+
+# Use a numpy array to define price as a 32-bit float
+price = np.array(housing['price'], np.float32)
+
+# Define waterfront as a Boolean using cast
+waterfront = tf.cast(housing['waterfront'], tf.bool)
+
+# Print price and waterfront
+print(price)
+print(waterfront)
+
+
+Loss functions in TensorFlow
+In this exercise, you will compute the loss using data from the King County housing dataset. You are given a target, price, which is a tensor of house prices, and predictions, which is a tensor of predicted house prices. You will evaluate the loss function and print out the value of the loss.
+
+Instructions 1/2
+50 XP
+1
+Import the keras module from tensorflow. Then, use price and predictions to compute the mean squared error (mse).
+
+# Import the keras module from tensorflow
+from tensorflow import keras
+
+# Compute the mean absolute error (mae)
+loss = keras.losses.mse(price, predictions)
+
+# Print the mean absolute error (mae)
+print(loss.numpy())
+
+Modify your code to compute the mean absolute error (mae), rather than the mean squared error (mse).
+
+
+# Import the keras module from tensorflow
+from tensorflow import keras
+
+# Compute the mean absolute error (mae)
+loss = keras.losses.mae(price, predictions)
+
+# Print the mean absolute error (mae)
+print(loss.numpy())
+
+Great work! You may have noticed that the MAE was much smaller than the MSE, even though price and predictions were the same. This is because the different loss functions penalize deviations of predictions from price differently. MSE does not like large deviations and punishes them harshly.
+
+
+Modifying the loss function
+In the previous exercise, you defined a tensorflow loss function and then evaluated it once for a set of actual and predicted values. In this exercise, you will compute the loss within another function called loss_function(), which first generates predicted values from the data and variables. The purpose of this is to construct a function of the trainable model variables that returns the loss. You can then repeatedly evaluate this function for different variable values until you find the minimum. In practice, you will pass this function to an optimizer in tensorflow. Note that features and targets have been defined and are available. Additionally, Variable, float32, and keras are available.
+
+Instructions
+100 XP
+Define a variable, scalar, with an initial value of 1.0 and a type of float32.
+Define a function called loss_function(), which takes scalar, features, and targets as arguments in that order.
+Use a mean absolute error loss function.
+
+
+# Initialize a variable named scalar
+scalar = Variable(1.0, float32)
+
+# Define the model
+def model(scalar, features = features):
+  	return scalar * features
+
+# Define a loss function
+def loss_function(scalar, features = features, targets = targets):
+	# Compute the predicted values
+	predictions = model(scalar, features)
+    
+	# Return the mean absolute error loss
+	return keras.losses.mae(targets, predictions)
+
+# Evaluate the loss function and print the loss
+print(loss_function(scalar).numpy())
+
+Set up a linear regression
+A univariate linear regression identifies the relationship between a single feature and the target tensor. In this exercise, we will use a property's lot size and price. Just as we discussed in the video, we will take the natural logarithms of both tensors, which are available as price_log and size_log.
+
+In this exercise, you will define the model and the loss function. You will then evaluate the loss function for two different values of intercept and slope. Remember that the predicted values are given by intercept + features*slope. Additionally, note that keras.losses.mse() is available for you. Furthermore, slope and intercept have been defined as variables.
+
+Instructions
+100 XP
+Define a function that returns the predicted values for a linear regression using intercept, features, and slope, and without using add() or multiply().
+Complete the loss_function() by adding the model's variables, intercept and slope, as arguments.
+Compute the mean squared error using targets and predictions.
+
+# Define a linear regression model
+def linear_regression(intercept, slope, features = size_log):
+	return intercept + features*slope
+
+# Set loss_function() to take the variables as arguments
+def loss_function(intercept, slope, features = size_log, targets = price_log):
+	# Set the predicted values
+	predictions = linear_regression(intercept, slope, features)
+    
+    # Return the mean squared error loss
+	return keras.losses.mse(targets,predictions)
+
+# Compute the loss for different slope and intercept values
+print(loss_function(0.1, 0.1).numpy())
+print(loss_function(0.1, 0.5).numpy())
+
+
+Train a linear model
+In this exercise, we will pick up where the previous exercise ended. The intercept and slope, intercept and slope, have been defined and initialized. Additionally, a function has been defined, loss_function(intercept, slope), which computes the loss using the data and model variables.
+
+You will now define an optimization operation as opt. You will then train a univariate linear model by minimizing the loss to find the optimal values of intercept and slope. Note that the opt operation will try to move closer to the optimum with each step, but will require many steps to find it. Thus, you must repeatedly execute the operation.
+
+Instructions
+100 XP
+Initialize an Adam optimizer as opt with a learning rate of 0.5.
+Apply the .minimize() method to the optimizer.
+Pass loss_function() with the appropriate arguments as a lambda function to .minimize().
+Supply the list of variables that need to be updated to var_list.
+
+# Initialize an Adam optimizer
+opt = keras.optimizers.Adam(0.5)
+
+for j in range(100):
+	# Apply minimize, pass the loss function, and supply the variables
+	opt.minimize(lambda: loss_function(intercept, slope), var_list=[intercept, slope])
+
+	# Print every 10th value of the loss
+	if j % 10 == 0:
+		print(loss_function(intercept, slope).numpy())
+
+# Plot data and regression line
+plot_results(intercept, slope)
+
+
+Multiple linear regression
+In most cases, performing a univariate linear regression will not yield a model that is useful for making accurate predictions. In this exercise, you will perform a multiple regression, which uses more than one feature.
+
+You will use price_log as your target and size_log and bedrooms as your features. Each of these tensors has been defined and is available. You will also switch from using the the mean squared error loss to the mean absolute error loss: keras.losses.mae(). Finally, the predicted values are computed as follows: params[0] + feature1*params[1] + feature2*params[2]. Note that we've defined a vector of parameters, params, as a variable, rather than using three variables. Here, params[0] is the intercept and params[1] and params[2] are the slopes.
+
+Instructions
+100 XP
+Define a linear regression model that returns the predicted values.
+Set loss_function() to take the parameter vector as an input.
+Use the mean absolute error loss.
+Complete the minimization operation.
+
+# Define the linear regression model
+def linear_regression(params, feature1 = size_log, feature2 = bedrooms):
+	return params[0] + feature1*params[1] + feature2*params[2]
+
+# Define the loss function
+def loss_function(params, targets = price_log, feature1 = size_log, feature2 = bedrooms):
+	# Set the predicted values
+	predictions = linear_regression(params, feature1, feature2)
+  
+	# Use the mean absolute error loss
+	return keras.losses.mae(targets, predictions)
+
+# Define the optimize operation
+opt = keras.optimizers.Adam()
+
+# Perform minimization and print trainable variables
+for j in range(10):
+	opt.minimize(lambda: loss_function(params), var_list=[params])
+	print_results(params)
+  
+  
+  Preparing to batch train
+Before we can train a linear model in batches, we must first define variables, a loss function, and an optimization operation. In this exercise, we will prepare to train a model that will predict price_batch, a batch of house prices, using size_batch, a batch of lot sizes in square feet. In contrast to the previous lesson, we will do this by loading batches of data using pandas, converting it to numpy arrays, and then using it to minimize the loss function in steps.
+
+Variable(), keras(), and float32 have been imported for you. Note that you should not set default argument values for either the model or loss function, since we will generate the data in batches during the training process.
+
+Instructions
+100 XP
+Define intercept as having an initial value of 10.0 and a data type of 32-bit float.
+Define the model to return the predicted values using intercept, slope, and features.
+Define a function called loss_function() that takes intercept, slope, targets, and features as arguments and in that order. Do not set default argument values.
+Define the mean squared error loss function using targets and predictions.
+
+# Define the intercept and slope
+intercept = Variable(10.0 , float32)
+slope = Variable(0.5, float32)
+
+# Define the model
+def linear_regression(intercept, slope, features):
+	# Define the predicted values
+	return intercept + features*slope
+
+# Define the loss function
+def loss_function(intercept, slope,targets,features):
+	# Define the predicted values
+	predictions = linear_regression(intercept, slope, features)
+    
+ 	# Define the MSE loss
+	return keras.losses.mse(targets, predictions)
+  
+  Training a linear model in batches
+In this exercise, we will train a linear regression model in batches, starting where we left off in the previous exercise. We will do this by stepping through the dataset in batches and updating the model's variables, intercept and slope, after each step. This approach will allow us to train with datasets that are otherwise too large to hold in memory.
+
+Note that the loss function,loss_function(intercept, slope, targets, features), has been defined for you. Additionally, keras has been imported for you and numpy is available as np. The trainable variables should be entered into var_list in the order in which they appear as loss function arguments.
+
+Instructions
+100 XP
+Use the .Adam() optimizer.
+Load in the data from 'kc_house_data.csv' in batches with a chunksize of 100.
+Extract the price column from batch, convert it to a numpy array of type 32-bit float, and assign it to price_batch.
+Complete the loss function, fill in the list of trainable variables, and perform minimization.
+
+# Initialize Adam optimizer
+opt = keras.optimizers.Adam()
+
+# Load data in batches
+for batch in pd.read_csv('kc_house_data.csv', chunksize=100):
+	size_batch = np.array(batch['sqft_lot'], np.float32)
+
+	# Extract the price values for the current batch
+	price_batch = np.array(batch['price'], np.float32)
+
+	# Complete the loss, fill in the variable list, and minimize
+	opt.minimize(lambda: loss_function(intercept, slope, price_batch, size_batch), var_list=[intercept, slope])
+
+# Print trained parameters
+print(intercept.numpy(), slope.numpy())
+
+
+The linear algebra of dense layers
+There are two ways to define a dense layer in tensorflow. The first involves the use of low-level, linear algebraic operations. The second makes use of high-level keras operations. In this exercise, we will use the first method to construct the network shown in the image below.
+
+This image depicts an neural network with 5 input nodes and 3 output nodes.
+The input layer contains 3 features -- education, marital status, and age -- which are available as borrower_features. The hidden layer contains 2 nodes and the output layer contains a single node.
+
+For each layer, you will take the previous layer as an input, initialize a set of weights, compute the product of the inputs and weights, and then apply an activation function. Note that Variable(), ones(), matmul(), and keras() have been imported from tensorflow.
+
+Instructions 1/2
+50 XP
+1
+2
+Initialize weights1 as a variable using a 3x2 tensor of ones.
+Compute the product of borrower_features by weights1 using matrix multiplication.
+Use a sigmoid activation function to transform product1 + bias1.
+
+# Initialize bias1
+bias1 = Variable(1.0)
+
+# Initialize weights1 as 3x2 variable of ones
+weights1 = Variable(ones((3, 2)))
+
+# Perform matrix multiplication of borrower_features and weights1
+product1 = matmul(borrower_features,weights1)
+
+# Apply sigmoid activation function to product1 + bias1
+dense1 = keras.activations.sigmoid(product1  + bias1)
+
+# Print shape of dense1
+print("\n dense1's output shape: {}".format(dense1.shape))
+
+
+# From previous step
+bias1 = Variable(1.0)
+weights1 = Variable(ones((3, 2)))
+product1 = matmul(borrower_features, weights1)
+dense1 = keras.activations.sigmoid(product1 + bias1)
+
+# Initialize bias2 and weights2
+bias2 = Variable(1.0)
+weights2 = Variable(ones((2, 1)))
+
+# Perform matrix multiplication of dense1 and weights2
+product2 = matmul(dense1,weights2)
+
+# Apply activation to product2 + bias2 and print the prediction
+prediction = keras.activations.sigmoid(product2  + bias2)
+print('\n prediction: {}'.format(prediction.numpy()[0,0]))
+print('\n actual: 1')
+
+
+The low-level approach with multiple examples
+In this exercise, we'll build further intuition for the low-level approach by constructing the first dense hidden layer for the case where we have multiple examples. We'll assume the model is trained and the first layer weights, weights1, and bias, bias1, are available. We'll then perform matrix multiplication of the borrower_features tensor by the weights1 variable. Recall that the borrower_features tensor includes education, marital status, and age. Finally, we'll apply the sigmoid function to the elements of products1 + bias1, yielding dense1.
+
+ 
+ 
+
+Note that matmul() and keras() have been imported from tensorflow.
+
+Instructions
+100 XP
+Compute products1 by matrix multiplying the features tensor by the weights.
+Use a sigmoid activation function to transform products1 + bias1.
+Print the shapes of borrower_features, weights1, bias1, and dense1.
+
+
+# Compute the product of borrower_features and weights1
+products1 = matmul(borrower_features,weights1)
+
+# Apply a sigmoid activation function to products1 + bias1
+dense1 = keras.activations.sigmoid(products1  + bias1)
+
+# Print the shapes of borrower_features, weights1, bias1, and dense1
+print('\n shape of borrower_features: ', borrower_features.shape)
+print('\n shape of weights1: ', weights1.shape)
+print('\n shape of bias1: ', bias1.shape)
+print('\n shape of dense1: ', dense1.shape)
+
+
+Using the dense layer operation
+We've now seen how to define dense layers in tensorflow using linear algebra. In this exercise, we'll skip the linear algebra and let keras work out the details. This will allow us to construct the network below, which has 2 hidden layers and 10 features, using less code than we needed for the network with 1 hidden layer and 3 features.
+
+This image depicts an neural network with 10 inputs nodes and 1 output node.
+
+To construct this network, we'll need to define three dense layers, each of which takes the previous layer as an input, multiplies it by weights, and applies an activation function. Note that input data has been defined and is available as a 100x10 tensor: borrower_features. Additionally, the keras.layers module is available.
+
+Instructions
+100 XP
+Set dense1 to be a dense layer with 7 output nodes and a sigmoid activation function.
+Define dense2 to be dense layer with 3 output nodes and a sigmoid activation function.
+Define predictions to be a dense layer with 1 output node and a sigmoid activation function.
+Print the shapes of dense1, dense2, and predictions in that order using the .shape method. Why does each of these tensors have 100 rows?
+
+# Define the first dense layer
+dense1 = keras.layers.Dense(7, activation='sigmoid')(borrower_features)
+
+# Define a dense layer with 3 output nodes
+dense2 = keras.layers.Dense(3, activation='sigmoid')(dense1)
+
+
+# Define a dense layer with 1 output node
+predictions = keras.layers.Dense(1, activation='sigmoid')(dense2)
+
+
+# Print the shapes of dense1, dense2, and predictions
+print('\n shape of dense1: ', dense1.shape)
+print('\n shape of dense2: ', dense2.shape)
+print('\n shape of predictions: ', predictions.shape)
+
+Binary classification problems
+In this exercise, you will again make use of credit card data. The target variable, default, indicates whether a credit card holder defaults on his or her payment in the following period. Since there are only two options--default or not--this is a binary classification problem. While the dataset has many features, you will focus on just three: the size of the three latest credit card bills. Finally, you will compute predictions from your untrained network, outputs, and compare those the target variable, default.
+
+The tensor of features has been loaded and is available as bill_amounts. Additionally, the constant(), float32, and keras.layers.Dense() operations are available.
+
+Instructions
+100 XP
+Define inputs as a 32-bit floating point constant tensor using bill_amounts.
+Set dense1 to be a dense layer with 3 output nodes and a relu activation function.
+Set dense2 to be a dense layer with 2 output nodes and a relu activation function.
+Set the output layer to be a dense layer with a single output node and a sigmoid activation function.
+
+# Construct input layer from features
+inputs = constant(bill_amounts , float32)
+
+# Define first dense layer
+dense1 = keras.layers.Dense(3 , activation='relu')(inputs)
+
+# Define second dense layer
+dense2 = keras.layers.Dense(2 , activation='relu')(dense1)
+
+# Define output layer
+outputs = keras.layers.Dense(1 , activation='sigmoid')(dense2)
+
+# Print error for first five examples
+error = default[:5] - outputs.numpy()[:5]
+print(error)
+
+
+Multiclass classification problems
+In this exercise, we expand beyond binary classification to cover multiclass problems. A multiclass problem has targets that can take on three or more values. In the credit card dataset, the education variable can take on 6 different values, each corresponding to a different level of education. We will use that as our target in this exercise and will also expand the feature set from 3 to 10 columns.
+
+As in the previous problem, you will define an input layer, dense layers, and an output layer. You will also print the untrained model's predictions, which are probabilities assigned to the classes. The tensor of features has been loaded and is available as borrower_features. Additionally, the constant(), float32, and keras.layers.Dense() operations are available.
+
+Instructions
+100 XP
+Define the input layer as a 32-bit constant tensor using borrower_features.
+Set the first dense layer to have 10 output nodes and a sigmoid activation function.
+Set the second dense layer to have 8 output nodes and a rectified linear unit activation function.
+Set the output layer to have 6 output nodes and the appropriate activation function.
+
+# Construct input layer from borrower features
+inputs = constant(borrower_features, float32)
+
+# Define first dense layer
+dense1 = keras.layers.Dense(10, activation='sigmoid')(inputs)
+
+# Define second dense layer
+dense2 = keras.layers.Dense(8, activation='relu')(dense1)
+
+# Define output layer
+outputs = keras.layers.Dense(6, activation='softmax')(dense2)
+
+# Print first five predictions
+print(outputs.numpy()[:5])
+
+# Initialize x_1 and x_2
+x_1 = Variable(6.0,float32)
+x_2 = Variable(0.3,float32)
+
+# Define the optimization operation
+opt = keras.optimizers.SGD(learning_rate=0.01)
+
+for j in range(100):
+	# Perform minimization using the loss function and x_1
+	opt.minimize(lambda: loss_function(x_1), var_list=[x_1])
+	# Perform minimization using the loss function and x_2
+	opt.minimize(lambda: loss_function(x_2), var_list=[x_2])
+
+# Print x_1 and x_2 as numpy arrays
+print(x_1.numpy(), x_2.numpy())
+
+
+Avoiding local minima
+The previous problem showed how easy it is to get stuck in local minima. We had a simple optimization problem in one variable and gradient descent still failed to deliver the global minimum when we had to travel through local minima first. One way to avoid this problem is to use momentum, which allows the optimizer to break through local minima. We will again use the loss function from the previous problem, which has been defined and is available for you as loss_function().
+
+The graph is of a single variable function that contains multiple local minima and a global minimum.
+
+Several optimizers in tensorflow have a momentum parameter, including SGD and RMSprop. You will make use of RMSprop in this exercise. Note that x_1 and x_2 have been initialized to the same value this time. Furthermore, keras.optimizers.RMSprop() has also been imported for you from tensorflow.
+
+Instructions
+100 XP
+Set the opt_1 operation to use a learning rate of 0.01 and a momentum of 0.99.
+Set opt_2 to use the root mean square propagation (RMS) optimizer with a learning rate of 0.01 and a momentum of 0.00.
+Define the minimization operation for opt_2.
+Print x_1 and x_2 as numpy arrays.
+
+# Initialize x_1 and x_2
+x_1 = Variable(0.05,float32)
+x_2 = Variable(0.05,float32)
+
+# Define the optimization operation for opt_1 and opt_2
+opt_1 = keras.optimizers.RMSprop(learning_rate=0.01, momentum=0.99)
+opt_2 = keras.optimizers.RMSprop(learning_rate=0.01, momentum=0.00)
+
+for j in range(100):
+	opt_1.minimize(lambda: loss_function(x_1), var_list=[x_1])
+    # Define the minimization operation for opt_2
+	opt_2.minimize(lambda: loss_function(x_2), var_list=[x_2])
+
+
+# Print x_1 and x_2 as numpy arrays
+print(x_1.numpy(), x_2.numpy())
+
+Initialization in TensorFlow
+A good initialization can reduce the amount of time needed to find the global minimum. In this exercise, we will initialize weights and biases for a neural network that will be used to predict credit card default decisions. To build intuition, we will use the low-level, linear algebraic approach, rather than making use of convenience functions and high-level keras operations. We will also expand the set of input features from 3 to 23. Several operations have been imported from tensorflow: Variable(), random(), and ones().
+
+Instructions
+100 XP
+Initialize the layer 1 weights, w1, as a Variable() with shape [23, 7], drawn from a normal distribution.
+Initialize the layer 1 bias using ones.
+Use a draw from the normal distribution to initialize w2 as a Variable() with shape [7, 1].
+Define b2 as a Variable() and set its initial value to 0.0.
+
+# Define the layer 1 weights
+w1 = Variable(random.normal([23, 7]))
+
+# Initialize the layer 1 bias
+b1 = Variable(ones([7]))
+
+# Define the layer 2 weights
+w2 = Variable(random.normal([7, 1]))
+
+# Define the layer 2 bias
+b2 = Variable(0.0)
+
+
+Defining the model and loss function
+In this exercise, you will train a neural network to predict whether a credit card holder will default. The features and targets you will use to train your network are available in the Python shell as borrower_features and default. You defined the weights and biases in the previous exercise.
+
+Note that the predictions layer is defined as 
+, where 
+ is the sigmoid activation, layer1 is a tensor of nodes for the first hidden dense layer, w2 is a tensor of weights, and b2 is the bias tensor.
+
+The trainable variables are w1, b1, w2, and b2. Additionally, the following operations have been imported for you: keras.activations.relu() and keras.layers.Dropout().
+
+Instructions
+100 XP
+Apply a rectified linear unit activation function to the first layer.
+Apply 25% dropout to layer1.
+Pass the target, targets, and the predicted values, predictions, to the cross entropy loss function.
+
+# Define the model
+def model(w1, b1, w2, b2, features = borrower_features):
+	# Apply relu activation functions to layer 1
+	layer1 = keras.activations.relu(matmul(features, w1) + b1)
+    # Apply dropout rate of 0.25
+	dropout = keras.layers.Dropout(0.25)(layer1)
+	return keras.activations.sigmoid(matmul(dropout, w2) + b2)
+
+# Define the loss function
+def loss_function(w1, b1, w2, b2, features = borrower_features, targets = default):
+	predictions = model(w1, b1, w2, b2)
+	# Pass targets and predictions to the cross entropy loss
+	return keras.losses.binary_crossentropy(targets, predictions)
+  
+  
+  Training neural networks with TensorFlow
+In the previous exercise, you defined a model, model(w1, b1, w2, b2, features), and a loss function, loss_function(w1, b1, w2, b2, features, targets), both of which are available to you in this exercise. You will now train the model and then evaluate its performance by predicting default outcomes in a test set, which consists of test_features and test_targets and is available to you. The trainable variables are w1, b1, w2, and b2. Additionally, the following operations have been imported for you: keras.activations.relu() and keras.layers.Dropout().
+
+Instructions
+100 XP
+Set the optimizer to perform minimization.
+Add the four trainable variables to var_list in the order in which they appear as arguments to loss_function().
+Use the model and test_features to predict the values for test_targets.
+
+# Train the model
+for j in range(100):
+    # Complete the optimizer
+	opt.minimize(lambda: loss_function(w1, b1, w2, b2), 
+                 var_list=[w1, b1, w2, b2])
+
+# Make predictions with model using test features
+model_predictions = model(w1, b1, w2, b2, test_features)
+
+# Construct the confusion matrix
+confusion_matrix(test_targets, model_predictions)
