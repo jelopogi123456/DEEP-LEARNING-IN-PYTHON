@@ -733,3 +733,252 @@ model_predictions = model(w1, b1, w2, b2, test_features)
 
 # Construct the confusion matrix
 confusion_matrix(test_targets, model_predictions)
+
+
+The sequential model in Keras
+In chapter 3, we used components of the keras API in tensorflow to define a neural network, but we stopped short of using its full capabilities to streamline model definition and training. In this exercise, you will use the keras sequential model API to define a neural network that can be used to classify images of sign language letters. You will also use the .summary() method to print the model's architecture, including the shape and number of parameters associated with each layer.
+
+Note that the images were reshaped from (28, 28) to (784,), so that they could be used as inputs to a dense layer. Additionally, note that keras has been imported from tensorflow for you.
+
+Instructions
+100 XP
+Define a keras sequential model named model.
+Set the first layer to be Dense() and to have 16 nodes and a relu activation.
+Define the second layer to be Dense() and to have 8 nodes and a relu activation.
+Set the output layer to have 4 nodes and use a softmax activation function.
+
+# Define a Keras sequential model
+model = keras.Sequential()
+
+# Define the first dense layer
+model.add(keras.layers.Dense(16, activation='relu', input_shape=(784,)))
+
+# Define the second dense layer
+model.add(keras.layers.Dense(8, activation='relu'))
+
+# Define the output layer
+model.add(keras.layers.Dense(4, activation='softmax'))
+
+# Print the model architecture
+print(model.summary())
+
+
+Compiling a sequential model
+In this exercise, you will work towards classifying letters from the Sign Language MNIST dataset; however, you will adopt a different network architecture than what you used in the previous exercise. There will be fewer layers, but more nodes. You will also apply dropout to prevent overfitting. Finally, you will compile the model to use the adam optimizer and the categorical_crossentropy loss. You will also use a method in keras to summarize your model's architecture. Note that keras has been imported from tensorflow for you and a sequential keras model has been defined as model.
+
+Instructions
+100 XP
+In the first dense layer, set the number of nodes to 16, the activation to sigmoid, and the input_shape to (784,).
+Apply dropout at a rate of 25% to the first layer's output.
+Set the output layer to be dense, have 4 nodes, and use a softmax activation function.
+Compile the model using an adam optimizer and categorical_crossentropy loss function.
+
+
+# Define the first dense layer
+model.add(keras.layers.Dense(16, activation = 'sigmoid', input_shape=(784, )))
+
+# Apply dropout to the first layer's output
+model.add(keras.layers.Dropout(0.25))
+
+# Define the output layer
+model.add(keras.layers.Dense(4, activation = 'softmax'))
+
+# Compile the model
+model.compile(optimizer = 'adam', loss='categorical_crossentropy')
+
+# Print a model summary
+print(model.summary())
+
+Defining a multiple input model
+In some cases, the sequential API will not be sufficiently flexible to accommodate your desired model architecture and you will need to use the functional API instead. If, for instance, you want to train two models with different architectures jointly, you will need to use the functional API to do this. In this exercise, we will see how to do this. We will also use the .summary() method to examine the joint model's architecture.
+
+Note that keras has been imported from tensorflow for you. Additionally, the input layers of the first and second models have been defined as m1_inputs and m2_inputs, respectively. Note that the two models have the same architecture, but one of them uses a sigmoid activation in the first layer and the other uses a relu.
+
+Instructions
+100 XP
+Pass model 1's input layer to its first layer and model 1's first layer to its second layer.
+Pass model 2's input layer to its first layer and model 2's first layer to its second layer.
+Use the add() operation to combine the second layers of model 1 and model 2.
+Complete the functional model definition.
+
+# For model 1, pass the input layer to layer 1 and layer 1 to layer 2
+m1_layer1 = keras.layers.Dense(12, activation='sigmoid')(m1_inputs)
+m1_layer2 = keras.layers.Dense(4, activation='softmax')(m1_layer1)
+
+# For model 2, pass the input layer to layer 1 and layer 1 to layer 2
+m2_layer1 = keras.layers.Dense(12, activation='relu')(m2_inputs)
+m2_layer2 = keras.layers.Dense(4, activation='softmax')(m2_layer1)
+
+# Merge model outputs and define a functional model
+merged = keras.layers.add([m1_layer2, m2_layer2])
+model = keras.Model(inputs=[m1_inputs, m2_inputs], outputs=merged)
+
+# Print a model summary
+print(model.summary())
+
+
+Training with Keras
+In this exercise, we return to our sign language letter classification problem. We have 2000 images of four letters--A, B, C, and D--and we want to classify them with a high level of accuracy. We will complete all parts of the problem, including the model definition, compilation, and training.
+
+Note that keras has been imported from tensorflow for you. Additionally, the features are available as sign_language_features and the targets are available as sign_language_labels.
+
+Instructions
+100 XP
+Define a sequential model named model.
+Set the output layer to be dense, have 4 nodes, and use a softmax activation function.
+Compile the model with the SGD optimizer and categorical_crossentropy loss.
+Complete the fitting operation and set the number of epochs to 5.
+
+# Define a sequential model
+model = keras.Sequential()
+
+# Define a hidden layer
+model.add(keras.layers.Dense(16, activation='relu', input_shape=(784,)))
+
+# Define the output layer
+model.add(keras.layers.Dense(4, activation='softmax'))
+
+# Compile the model
+model.compile('SGD', loss='categorical_crossentropy')
+
+# Complete the fitting operation
+model.fit(sign_language_features, sign_language_labels, epochs=5)
+
+
+Metrics and validation with Keras
+We trained a model to predict sign language letters in the previous exercise, but it is unclear how successful we were in doing so. In this exercise, we will try to improve upon the interpretability of our results. Since we did not use a validation split, we only observed performance improvements within the training set; however, it is unclear how much of that was due to overfitting. Furthermore, since we did not supply a metric, we only saw decreases in the loss function, which do not have any clear interpretation.
+
+Note that keras has been imported for you from tensorflow.
+
+Instructions
+100 XP
+Set the first dense layer to have 32 nodes, use a sigmoid activation function, and have an input shape of (784,).
+Use the root mean square propagation optimizer, a categorical crossentropy loss, and the accuracy metric.
+Set the number of epochs to 10 and use 10% of the dataset for validation.
+
+# Define sequential model
+model = keras.Sequential()
+
+# Define the first layer
+model.add(keras.layers.Dense(32, activation='sigmoid', input_shape=(784,)))
+
+# Add activation function to classifier
+model.add(keras.layers.Dense(4, activation='softmax'))
+
+# Set the optimizer, loss function, and metrics
+model.compile(optimizer='RMSprop', loss='categorical_crossentropy', metrics=['accuracy'])
+
+# Add the number of epochs and the validation split
+model.fit(sign_language_features, sign_language_labels, epochs=10, validation_split=0.1)
+
+
+Overfitting detection
+In this exercise, we'll work with a small subset of the examples from the original sign language letters dataset. A small sample, coupled with a heavily-parameterized model, will generally lead to overfitting. This means that your model will simply memorize the class of each example, rather than identifying features that generalize to many examples.
+
+You will detect overfitting by checking whether the validation sample loss is substantially higher than the training sample loss and whether it increases with further training. With a small sample and a high learning rate, the model will struggle to converge on an optimum. You will set a low learning rate for the optimizer, which will make it easier to identify overfitting.
+
+Note that keras has been imported from tensorflow.
+
+Instructions
+100 XP
+Define a sequential model in keras named model.
+Add a first dense layer with 1024 nodes, a relu activation, and an input shape of (784,).
+Set the learning rate to 0.001.
+Set the fit() operation to iterate over the full sample 50 times and use 50% of the sample for validation purposes.
+
+
+# Define sequential model
+model = keras.Sequential()
+
+# Define the first layer
+model.add(keras.layers.Dense(1024, activation='relu', input_shape=(784, )))
+
+# Add activation function to classifier
+model.add(keras.layers.Dense(4, activation='softmax'))
+
+# Finish the model compilation
+model.compile(optimizer=keras.optimizers.Adam(lr=0.001), 
+              loss='categorical_crossentropy', metrics=['accuracy'])
+
+# Complete the model fit operation
+model.fit(sign_language_features, sign_language_labels, epochs=50, validation_split=0.50)
+
+
+Evaluating models
+Two models have been trained and are available: large_model, which has many parameters; and small_model, which has fewer parameters. Both models have been trained using train_features and train_labels, which are available to you. A separate test set, which consists of test_features and test_labels, is also available.
+
+Your goal is to evaluate relative model performance and also determine whether either model exhibits signs of overfitting. You will do this by evaluating large_model and small_model on both the train and test sets. For each model, you can do this by applying the .evaluate(x, y) method to compute the loss for features x and labels y. You will then compare the four losses generated.
+
+Instructions
+100 XP
+Instructions
+100 XP
+Evaluate the small model using the train data.
+Evaluate the small model using the test data.
+Evaluate the large model using the train data.
+Evaluate the large model using the test data.
+
+# Evaluate the small model using the train data
+small_train = small_model.evaluate(train_features, train_labels)
+
+# Evaluate the small model using the test data
+small_test = small_model.evaluate(test_features, test_labels)
+
+# Evaluate the large model using the train data
+large_train = large_model.evaluate(train_features, train_labels)
+
+# Evaluate the large model using the test data
+large_test = large_model.evaluate(test_features, test_labels)
+
+# Print losses
+print('\n Small - Train: {}, Test: {}'.format(small_train, small_test))
+print('Large - Train: {}, Test: {}'.format(large_train, large_test))
+
+
+Preparing to train with Estimators
+For this exercise, we'll return to the King County housing transaction dataset from chapter 2. We will again develop and train a machine learning model to predict house prices; however, this time, we'll do it using the estimator API.
+
+Rather than completing everything in one step, we'll break this procedure down into parts. We'll begin by defining the feature columns and loading the data. In the next exercise, we'll define and train a premade estimator. Note that feature_column has been imported for you from tensorflow. Additionally, numpy has been imported as np, and the Kings County housing dataset is available as a pandas DataFrame: housing.
+
+Instructions
+100 XP
+Complete the feature column for bedrooms and add another numeric feature column for bathrooms. Use bedrooms and bathrooms as the keys.
+Create a list of the feature columns, feature_list, in the order in which they were defined.
+Set labels to be equal to the price column in housing.
+Complete the bedrooms entry of the features dictionary and add another entry for bathrooms.
+
+# Define feature columns for bedrooms and bathrooms
+bedrooms = feature_column.numeric_column("bedrooms")
+bathrooms = feature_column.numeric_column("bathrooms")
+
+# Define the list of feature columns
+feature_list = [bedrooms, bathrooms]
+
+def input_fn():
+	# Define the labels
+	labels = np.array(housing['price'])
+	# Define the features
+	features = {'bedrooms':np.array(housing['bedrooms']), 
+                'bathrooms':np.array(housing['bathrooms'])}
+	return features, labels
+	
+	
+Defining Estimators
+In the previous exercise, you defined a list of feature columns, feature_list, and a data input function, input_fn(). In this exercise, you will build on that work by defining an estimator that makes use of input data.
+
+Instructions 1/2
+50 XP
+1
+Use a deep neural network regressor with 2 nodes in both the first and second hidden layers and 1 training step.
+
+# Define the model and set the number of steps
+model = estimator.DNNRegressor(feature_columns=feature_list, hidden_units=[2,2])
+model.train(input_fn, steps=1)
+
+
+Defining Estimators
+In the previous exercise, you defined a list of feature columns, feature_list, and a data input function, input_fn(). In this exercise, you will build on that work by defining an estimator that makes use of input data.
+
+# Define the model and set the number of steps
+model = estimator.LinearRegressor(feature_columns=feature_list)
+model.train(input_fn, steps=2)
