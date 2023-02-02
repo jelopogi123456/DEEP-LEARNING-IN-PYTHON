@@ -1,0 +1,290 @@
+Describing Keras
+Which of the following statements about Keras is false?
+
+Answer the question
+50XP
+Possible Answers:
+
+1.) Keras is integrated into TensorFlow, that means you can call Keras from within TensorFlow and get the best of both worlds.
+2.) Keras can work well on its own without using a backend, like TensorFlow.
+3.) Keras is an open source project started by François Chollet.
+
+
+Answer:
+Keras can work well on its own without using a backend, like TensorFlow.
+
+
+You're good at spotting lies! Keras is a wrapper around a backend library, so a backend like TensorFlow, Theano, CNTK, etc must be provided.
+
+
+
+Would you use deep learning?
+Imagine you're building an app that allows you to take a picture of your clothes and then shows you a pair of shoes that would match well. This app needs a machine learning module that's in charge of identifying the type of clothes you are wearing, as well as their color and texture. Would you use deep learning to accomplish this task?
+
+I'd use deep learning since we are dealing with unstructured data and neural networks work well with images.
+
+
+Hello nets!
+You're going to build a simple neural network to get a feeling of how quickly it is to accomplish this in Keras.
+
+You will build a network that takes two numbers as an input, passes them through a hidden layer of 10 neurons, and finally outputs a single non-constrained number.
+
+A non-constrained output can be obtained by avoiding setting an activation function in the output layer. This is useful for problems like regression, when we want our output to be able to take any non-constrained value.
+
+
+Instructions
+100 XP
+Import the Sequential model from tensorflow.keras.models and the Denselayer from tensorflow.keras.layers.
+Create an instance of the Sequential model.
+Add a 10-neuron hidden Dense layer with an input_shape of two neurons.
+Add a final 1-neuron output layer and summarize your model with summary().
+
+# Import the Sequential model and Dense layer
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+
+# Create a Sequential model
+model = Sequential()
+
+# Add an input layer and a hidden layer with 10 neurons
+model.add(Dense(10, input_shape=(2, ), activation="relu"))
+
+# Add a 1-neuron output layer
+model.add(Dense(1))
+
+# Summarise your model
+model.summary()
+
+
+Counting parameters
+You've just created a neural network. But you're going to create a new one now, taking some time to think about the weights of each layer. The Keras Dense layer and the Sequential model are already loaded for you to use.
+
+This is the network you will be creating:
+
+
+Instructions 1/2
+50 XP
+1
+2
+Instantiate a new Sequential() model.
+Add a Dense() layer with five neurons and three neurons as input.
+Add a final dense layer with one neuron and no activation.
+
+# Instantiate a new Sequential model
+model = Sequential()
+
+# Add a Dense layer with five neurons and three inputs
+model.add(Dense(5, input_shape=(3, ), activation="relu"))
+
+# Add a final Dense layer with one neuron and no activation
+model.add(Dense(1))
+
+# Summarize your model
+model.summary()
+
+
+Question
+Given the model you just built, which answer is correct regarding the number of weights (parameters) in the hidden layer?
+
+
+There are 20 parameters, 15 from the connections of our inputs to our hidden layer and 5 from the bias weight of each neuron in the hidden layer.
+
+
+Build as shown!
+You will take on a final challenge before moving on to the next lesson. Build the network shown in the picture below. Prove your mastered Keras basics in no time!
+
+
+Instructions
+100 XP
+Instantiate a Sequential model.
+Build the input and hidden layer.
+Add the output layer.
+
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+
+
+# Instantiate a new Sequential model
+model = Sequential()
+
+# Add a Dense layer with five neurons and three inputs
+model.add(Dense(3, input_shape=(2, ), activation="relu"))
+
+# Add a final Dense layer with one neuron and no activation
+model.add(Dense(1))
+
+
+
+
+Specifying a model
+You will build a simple regression model to predict the orbit of the meteor!
+
+Your training data consist of measurements taken at time steps from -10 minutes before the impact region to +10 minutes after. Each time step can be viewed as an X coordinate in our graph, which has an associated position Y for the meteor orbit at that time step.
+
+Note that you can view this problem as approximating a quadratic function via the use of neural networks.
+
+
+This data is stored in two numpy arrays: one called time_steps , what we call features, and another called y_positions, with the labels. Go on and build your model! It should be able to predict the y positions for the meteor orbit at future time steps.
+
+Keras Sequential model and Dense layers are available for you to use.
+
+Instructions
+100 XP
+Instantiate a Sequential model.
+Add a Dense layer of 50 neurons with an input shape of 1 neuron.
+Add two Dense layers of 50 neurons each and 'relu' activation.
+End your model with a Den
+
+# Instantiate a Sequential model
+model = Sequential()
+
+# Add a Dense layer with 50 neurons and an input of 1 neuron
+model.add(Dense(50, input_shape=(1,), activation='relu'))
+
+# Add two Dense layers with 50 neurons and relu activation
+model.add(Dense(50,activation='relu'))
+model.add(Dense(50,activation='relu'))
+# End your model with a Dense layer and no activation
+model.add(Dense(1))
+
+Training
+You're going to train your first model in this course, and for a good cause!
+
+Remember that before training your Keras models you need to compile them. This can be done with the .compile() method. The .compile() method takes arguments such as the optimizer, used for weight updating, and the loss function, which is what we want to minimize. Training your model is as easy as calling the .fit() method, passing on the features, labels and a number of epochs to train for.
+
+The regression model you built in the previous exercise is loaded for you to use, along with the time_steps and y_positions data. Train it and evaluate it on this very same data, let's see if your model can learn the meteor's trajectory.
+
+Instructions
+100 XP
+Compile your model making use of the 'adam' optimizer and 'mse' as your loss function.
+Fit your model using the features and labels for 30 epochs.
+Evaluate your model with the .evaluate() method, passing the features and labels used during training.
+
+# Compile your model
+model.compile(optimizer = 'adam', loss = 'mse')
+
+print("Training started..., this can take a while:")
+
+# Fit your model on your data for 30 epochs
+model.fit(time_steps,y_positions, epochs = 30)
+
+# Evaluate your model 
+print("Final loss value:",model.evaluate(time_steps, y_positions ))
+
+
+Predicting the orbit!
+You've already trained a model that approximates the orbit of the meteor approaching Earth and it's loaded for you to use.
+
+Since you trained your model for values between -10 and 10 minutes, your model hasn't yet seen any other values for different time steps. You will now visualize how your model behaves on unseen data.
+
+If you want to check the source code of plot_orbit, paste show_code(plot_orbit) into the console.
+
+Hurry up, the Earth is running out of time!
+
+Remember np.arange(x,y) produces a range of values from x to y-1. That is the [x, y) interval.
+
+Instructions 1/2
+50 XP
+1
+Use the model's .predict() method to predict from -10 to 10 minutes.
+
+# Predict the twenty minutes orbit
+twenty_min_orbit = model.predict(np.arange(-10, 11))
+
+# Plot the twenty minute orbit 
+plot_orbit(twenty_min_orbit)
+
+
+Use the model's .predict() method to predict from -40 to 40 minutes.
+
+
+# Predict the eighty minute orbit
+eighty_min_orbit = model.predict(np.arange(-40, 41))
+
+# Plot the eighty minute orbit 
+plot_orbit(eighty_min_orbit)
+
+
+Exploring dollar bills
+You will practice building classification models in Keras with the Banknote Authentication dataset.
+
+Your goal is to distinguish between real and fake dollar bills. In order to do this, the dataset comes with 4 features: variance,skewness,kurtosis and entropy. These features are calculated by applying mathematical operations over the dollar bill images. The labels are found in the dataframe's class column.
+
+
+A pandas DataFrame named banknotes is ready to use, let's do some data exploration!
+
+Instructions
+100 XP
+Import seaborn as sns.
+Use seaborn's pairplot() on banknotes and set hue to be the name of the column containing the labels.
+Generate descriptive statistics for the banknotes authentication data.
+Count the number of observations per label with .value_counts().
+
+# Import seaborn
+import seaborn as sns
+
+# Use pairplot and set the hue to be our class column
+sns.pairplot(banknotes, hue='class') 
+
+# Show the plot
+plt.show()
+
+# Describe the data
+print('Dataset stats: \n', banknotes.describe())
+
+# Count the number of observations per class
+print('Observations per class: \n', banknotes['class'].value_counts())
+
+
+
+A binary classification model
+Now that you know what the Banknote Authentication dataset looks like, we'll build a simple model to distinguish between real and fake bills.
+
+You will perform binary classification by using a single neuron as an output. The input layer will have 4 neurons since we have 4 features in our dataset. The model's output will be a value constrained between 0 and 1.
+
+We will interpret this output number as the probability of our input variables coming from a fake dollar bill, with 1 meaning we are certain it's a fake bill.
+
+
+Instructions
+100 XP
+Import the Sequential model and Dense layer from tensorflow.keras.
+Create a sequential model.
+Add a 4 neuron input layer with the input_shape parameter and a 1 neuron output layer with sigmoid activation.
+Compile your model using sgd as an optimizer.
+
+# Import the sequential model and dense layer
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+
+# Create a sequential model
+model = Sequential()
+
+# Add a dense layer 
+model.add(Dense(1, input_shape=(4, ), activation='sigmoid'))
+
+# Compile your model
+model.compile(loss='binary_crossentropy', optimizer='sgd', metrics=['accuracy'])
+
+# Display a summary of your model
+model.summary()
+
+
+Is this dollar bill fake ?
+You are now ready to train your model and check how well it performs when classifying new bills! The dataset has already been partitioned into features: X_train & X_test, and labels: y_train & y_test.
+
+Instructions
+100 XP
+Train your model for 20 epochs calling .fit(), passing in the training data.
+Check your model accuracy using the .evaluate() method on the test data.
+Print accuracy.
+
+
+# Train your model for 20 epochs
+model.fit(X_train, y_train, epochs = 20)
+
+# Evaluate your model accuracy on the test set
+accuracy = model.evaluate(X_test, y_test)[1]
+
+# Print accuracy
+print('Accuracy:', accuracy)
