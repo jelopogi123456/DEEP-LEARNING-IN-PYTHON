@@ -1,0 +1,347 @@
+Input layers
+The first step in creating a neural network model is to define the Input layer. This layer takes in raw data, usually in the form of numpy arrays. The shape of the Input layer defines how many variables your neural network will use. For example, if the input data has 10 columns, you define an Input layer with a shape of (10,).
+
+In this case, you are only using one input in your network.
+
+Instructions
+100 XP
+Import the Input layer function from keras.layers.
+Create an input layer of shape 1.
+
+# Import Input from tensorflow.keras.layers
+from tensorflow.keras.layers import Input
+
+# Create an input layer of shape 1
+input_tensor = Input(shape=(1,))
+
+
+Dense layers
+Once you have an Input layer, the next step is to add a Dense layer.
+
+Dense layers learn a weight matrix, where the first dimension of the matrix is the dimension of the input data, and the second dimension is the dimension of the output data. Recall that your Input layer has a shape of 1. In this case, your output layer will also have a shape of 1. This means that the Dense layer will learn a 1x1 weight matrix.
+
+In this exercise, you will add a dense layer to your model, after the input layer.
+
+Instructions
+100 XP
+Import the Dense layer function from keras.layers.
+Create a Dense layer with 1 unit.
+Pass input_tensor to output_layer().
+
+# Load layers
+from tensorflow.keras.layers import Input, Dense
+
+# Input layer
+input_tensor = Input(shape=(1,))
+
+# Dense layer
+output_layer = Dense(1)
+
+# Connect the dense layer to the input_tensor
+output_tensor = output_layer(input_tensor)
+
+
+Output layers
+Output layers are simply Dense layers! Output layers are used to reduce the dimension of the inputs to the dimension of the outputs. You'll learn more about output dimensions in chapter 4, but for now, you'll always use a single output in your neural networks, which is equivalent to Dense(1) or a dense layer with a single unit.
+
+Instructions
+100 XP
+Import the Input and Dense functions from keras.layers.
+Create an input layer of shape 1.
+Again, create a dense layer with 1 unit and pass input_tensor directly to it.
+
+# Load layers
+from tensorflow.keras.layers import Input, Dense
+
+# Input layer
+input_tensor = Input(shape=(1,))
+
+# Create a dense layer and connect the dense layer to the input_tensor in one step
+# Note that we did this in 2 steps in the previous exercise, but are doing it in one step now
+output_tensor = Dense(1)(input_tensor)
+
+Build a model
+Once you've defined an input layer and an output layer, you can build a Keras model. The model object is how you tell Keras where the model starts and stops: where data comes in and where predictions come out.
+
+Instructions
+100 XP
+Import Model from keras.models to create a keras model.
+Use the input layer and output layer you already defined as the model's input and output.
+
+# Input/dense/output layers
+from tensorflow.keras.layers import Input, Dense
+input_tensor = Input(shape=(1,))
+output_tensor = Dense(1)(input_tensor)
+
+# Build the model
+from tensorflow.keras.models import Model
+model = Model(input_tensor, output_tensor)
+
+
+Compile a model
+The final step in creating a model is compiling it. Now that you've created a model, you have to compile it before you can fit it to data. This finalizes your model, freezes all its settings, and prepares it to meet some data!
+
+During compilation, you specify the optimizer to use for fitting the model to the data, and a loss function. 'adam' is a good default optimizer to use, and will generally work well. Loss function depends on the problem at hand. Mean squared error is a common loss function and will optimize for predicting the mean, as is done in least squares regression.
+
+Mean absolute error optimizes for the median and is used in quantile regression. For this dataset, 'mean_absolute_error' works pretty well, so use it as your loss function.
+
+Instructions
+100 XP
+Compile the model you created (model).
+Use the 'adam' optimizer.
+Use mean absolute error (or 'mean_absolute_error') loss.
+
+# Compile the model
+model.compile(optimizer='adam', loss='mean_absolute_error')
+
+
+Visualize a model
+Now that you've compiled the model, take a look a the result of your hard work! You can do this by looking at the model summary, as well as its plot.
+
+The summary will tell you the names of the layers, as well as how many units they have and how many parameters are in the model.
+
+The plot will show how the layers connect to each other.
+
+
+
+Instructions
+100 XP
+Summarize the model.
+Plot the model.
+
+# Import the plotting function
+from tensorflow.keras.utils import plot_model
+import matplotlib.pyplot as plt
+
+# Summarize the model
+model.summary()
+
+# Plot the model
+plot_model(model, to_file='model.png')
+
+# Display the image
+data = plt.imread('model.png')
+plt.imshow(data)
+plt.show()
+
+
+Fit the model to the tournament basketball data
+Now that the model is compiled, you are ready to fit it to some data!
+
+In this exercise, you'll use a dataset of scores from US College Basketball tournament games. Each row of the dataset has the team ids: team_1 and team_2, as integers. It also has the seed difference between the teams (seeds are assigned by the tournament committee and represent a ranking of how strong the teams are) and the score difference of the game (e.g. if team_1 wins by 5 points, the score difference is 5).
+
+To fit the model, you provide a matrix of X variables (in this case one column: the seed difference) and a matrix of Y variables (in this case one column: the score difference).
+
+The games_tourney DataFrame along with the compiled model object is available in your workspace.
+
+Instructions
+100 XP
+Fit the model with seed_diff as the input variable and score_diff as the output variable.
+Use 1 epoch, a batch size of 128, and a 10% validation split.
+
+Evaluate the model on a test set
+After fitting the model, you can evaluate it on new data. You will give the model a new X matrix (also called test data), allow it to make predictions, and then compare to the known y variable (also called target data).
+
+In this case, you'll use data from the post-season tournament to evaluate your model. The tournament games happen after the regular season games you used to train our model, and are therefore a good evaluation of how well your model performs out-of-sample.
+
+The games_tourney_test DataFrame along with the fitted model object is available in your workspace.
+
+Instructions
+100 XP
+Assign the test data (seed_diff column) to X_test.
+Assign the target data (score_diff column) to y_test.
+Evaluate the model on X_test and y_test.
+
+# Load the X variable from the test data
+X_test = games_tourney_test['seed_diff']
+
+# Load the y variable from the test data
+y_test = games_tourney_test['score_diff']
+
+# Evaluate the model on the test data
+print(model.evaluate(X_test, y_test, verbose=False))
+
+Define team lookup
+Shared layers allow a model to use the same weight matrix for multiple steps. In this exercise, you will build a "team strength" layer that represents each team by a single number. You will use this number for both teams in the model. The model will learn a number for each team that works well both when the team is team_1 and when the team is team_2 in the input data.
+
+The games_season DataFrame is available in your workspace.
+
+Instructions
+100 XP
+Count the number of unique teams.
+Create an embedding layer that maps each team ID to a single number representing that team's strength.
+The output shape should be 1 dimension (as we want to represent the teams by a single number).
+The input length should be 1 dimension (as each team is represented by exactly one id).
+
+# Imports
+from tensorflow.keras.layers import Embedding
+from numpy import unique
+
+# Count the unique number of teams
+n_teams = unique(games_season['team_1']).shape[0]
+
+# Create an embedding layer
+team_lookup = Embedding(input_dim=n_teams,
+                        output_dim=1,
+                        input_length=1,
+                        name='Team-Strength')
+                        
+                        
+  
+ Define team model
+The team strength lookup has three components: an input, an embedding layer, and a flatten layer that creates the output.
+
+If you wrap these three layers in a model with an input and output, you can re-use that stack of three layers at multiple places.
+
+Note again that the weights for all three layers will be shared everywhere we use them.
+
+Instructions
+100 XP
+Create a 1D input layer for the team ID (which will be an integer). Be sure to set the correct input shape!
+Pass this input to the team strength lookup layer you created previously.
+Flatten the output of the team strength lookup.
+Create a model that uses the 1D input as input and flattened team strength as output.
+
+# Imports
+from tensorflow.keras.layers import Input, Embedding, Flatten
+from tensorflow.keras.models import Model
+
+# Create an input layer for the team ID
+teamid_in = Input(shape=(1,))
+
+# Lookup the input in the team strength embedding layer
+strength_lookup = team_lookup(teamid_in)
+
+# Flatten the output
+strength_lookup_flat = Flatten()(strength_lookup)
+
+# Combine the operations into a single, re-usable model
+team_strength_model = Model(teamid_in, strength_lookup_flat, name='Team-Strength-Model')
+
+
+Defining two inputs
+In this exercise, you will define two input layers for the two teams in your model. This allows you to specify later in the model how the data from each team will be used differently.
+
+Instructions
+100 XP
+Create an input layer to use for team 1. Recall that our input dimension is 1.
+Name the input "Team-1-In" so you can later distinguish it from team 2.
+Create an input layer to use for team 2, named "Team-2-In".
+
+# Load the input layer from tensorflow.keras.layers
+from tensorflow.keras.layers import Input
+
+# Input layer for team 1
+team_in_1 = Input(shape=(1,), name='Team-1-In')
+
+# Separate input layer for team 2
+team_in_2 = Input(shape=(1,), name='Team-2-In')
+
+
+Lookup both inputs in the same model
+Now that you have a team strength model and an input layer for each team, you can lookup the team inputs in the shared team strength model. The two inputs will share the same weights.
+
+In this dataset, you have 10,888 unique teams. You want to learn a strength rating for each team, such that if any pair of teams plays each other, you can predict the score, even if those two teams have never played before. Furthermore, you want the strength rating to be the same, regardless of whether the team is the home team or the away team.
+
+To achieve this, you use a shared layer, defined by the re-usable model (team_strength_model()) you built in exercise 3 and the two input layers (team_in_1 and team_in_2) from the previous exercise, all of which are available in your workspace.
+
+Instructions
+100 XP
+Lookup the first team ID in the team strength model.
+Lookup the second team ID in the team strength model.
+
+# Lookup team 1 in the team strength model
+team_1_strength = team_strength_model(team_in_1)
+
+# Lookup team 2 in the team strength model
+team_2_strength = team_strength_model(team_in_2)
+
+
+Output layer using shared layer
+Now that you've looked up how "strong" each team is, subtract the team strengths to determine which team is expected to win the game.
+
+This is a bit like the seeds that the tournament committee uses, which are also a measure of team strength. But rather than using seed differences to predict score differences, you'll use the difference of your own team strength model to predict score differences.
+
+The subtract layer will combine the weights from the two layers by subtracting them.
+
+Instructions
+100 XP
+Import the Subtract layer from keras.layers.
+Combine the two-team strength lookups you did earlier.
+
+# Import the Subtract layer from tensorflow.keras
+from tensorflow.keras.layers import Subtract
+
+# Create a subtract layer using the inputs from the previous exercise
+score_diff = Subtract()([team_1_strength, team_2_strength])
+
+
+Model using two inputs and one output
+Now that you have your two inputs (team id 1 and team id 2) and output (score difference), you can wrap them up in a model so you can use it later for fitting to data and evaluating on new data.
+
+Your model will look like the following diagram:
+
+
+
+Instructions
+
+Define a model with the two teams as inputs and use the score difference as the output.
+Compile the model with the 'adam' optimizer and 'mean_absolute_error' loss.
+
+# Imports
+from tensorflow.keras.layers import Subtract
+from tensorflow.keras.models import Model
+
+# Subtraction layer from previous exercise
+score_diff = Subtract()([team_1_strength, team_2_strength])
+
+# Create the model
+model = Model([team_in_1, team_in_2], score_diff)
+
+# Compile the model
+model.compile(optimizer='adam', loss='mean_absolute_error')
+
+
+Fit the model to the regular season training data
+Now that you've defined a complete team strength model, you can fit it to the basketball data! Since your model has two inputs now, you need to pass the input data as a list.
+
+Instructions
+100 XP
+Assign the 'team_1' and 'team_2' columns from games_season to input_1 and input_2, respectively.
+Use 'score_diff' column from games_season as the target.
+Fit the model using 1 epoch, a batch size of 2048, and a 10% validation split.
+
+# Get the team_1 column from the regular season data
+input_1 = games_season['team_1']
+
+# Get the team_2 column from the regular season data
+input_2 = games_season['team_2']
+
+# Fit the model to input 1 and 2, using score diff as a target
+model.fit([input_1, input_2],
+          games_season['score_diff'],
+          epochs=1,
+          batch_size=2048,
+          validation_split=0.10,
+          verbose=True)
+          
+          
+Evaluate the model on the tournament test data
+The model you fit to the regular season data (model) in the previous exercise and the tournament dataset (games_tourney) are available in your workspace.
+
+In this exercise, you will evaluate the model on this new dataset. This evaluation will tell you how well you can predict the tournament games, based on a model trained with the regular season data. This is interesting because many teams play each other in the tournament that did not play in the regular season, so this is a very good check that your model is not overfitting.
+
+Instructions
+100 XP
+Assign the 'team_1' and 'team_2' columns from games_tourney to input_1 and input_2, respectively.
+Evaluate the model.
+
+
+# Get team_1 from the tournament data
+input_1 = games_tourney['team_1']
+
+# Get team_2 from the tournament data
+input_2 = games_tourney['team_2']
+
+# Evaluate the model using these inputs
+print(model.evaluate([input_1, input_2], games_tourney['score_diff'], verbose=False))
